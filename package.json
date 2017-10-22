@@ -25,6 +25,7 @@
   "homepage": "https://github.com/rpaschoal/ng-chat-nodejs#readme",
   "dependencies": {
     "express": "^4.16.2",
+    "socket.io": "^2.0.3",
     "vash": "^0.12.3"
   }
 }

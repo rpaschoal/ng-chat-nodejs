@@ -1,3 +1,26 @@
 h1{
     color:#FFF;
 }
+
+.form-box
+{
+    background-color: #fff;
+    width: 300px;
+    height: 200px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -150px;
+    margin-top: -100px;
+    border-radius: 5px;
+    box-shadow: 5px 5px 3px rgba(68,68,68,0.6);
+    padding: 10px; 
+}
+.form-box form
+{
+    margin-top:20px;
+}
+.form-box label
+{
+    display: inline-block;
+}

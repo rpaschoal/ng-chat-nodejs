@@ -6,6 +6,10 @@ import { AppComponent } from './app.component';
 
 import { NgChatModule } from 'ng-chat';
 
+import { SocketIoModule, SocketIoConfig } from 'ng-socket-io';
+
+const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
+
 @NgModule({
   declarations: [
     AppComponent
@@ -13,7 +17,8 @@ import { NgChatModule } from 'ng-chat';
   imports: [
     BrowserModule,
     FormsModule,
-    NgChatModule
+    NgChatModule,
+    SocketIoModule.forRoot(config) 
   ],
   providers: [],
   bootstrap: [AppComponent]
