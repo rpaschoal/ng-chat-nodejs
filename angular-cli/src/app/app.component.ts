@@ -14,7 +14,6 @@ export class AppComponent {
   
   userId: string;
   username: string;
-  joinedUsername: string;
 
   public adapter: ChatAdapter;
 
@@ -25,7 +24,6 @@ export class AppComponent {
   public joinRoom(): void 
   {
     this.socket.emit("join", this.username);
-    this.joinedUsername = this.username;
   }
 
   public InitializeSocketListerners(): void
