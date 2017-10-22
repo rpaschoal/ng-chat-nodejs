@@ -80,7 +80,7 @@ io.on('connection', function(socket){
 
     // On disconnect remove this socket client from the users collection
     socket.on('disconnect', function() {
-      console.log('Got disconnect!');
+      console.log('User disconnected!');
 
       var i = usersCollection.findIndex(x => x.id == socket.id);
       usersCollection.splice(i, 1);
@@ -90,6 +90,12 @@ io.on('connection', function(socket){
   socket.on("sendMessage", function(message){
     console.log("Message received:");
     console.log(message);
-  });
 
+    io.to(message.toId).emit("messageReceived", {
+      user: usersCollection.find(x => x.id == message.fromId),
+      message: message
+    });
+
+    console.log("Message dispatched.");
+  });
 });

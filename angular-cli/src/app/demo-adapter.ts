@@ -15,7 +15,7 @@ export class DemoAdapter extends ChatAdapter
         this.http = http;
         this.userId = userId;
 
-        //this.InitializeSocketListerners();  
+        this.InitializeSocketListerners();  
     }
 
     listFriends(): Observable<User[]> {
@@ -48,5 +48,15 @@ export class DemoAdapter extends ChatAdapter
 
         //     this.onMessageReceived(user, replyMessage);
         // }, 1000);
+    }
+
+    public InitializeSocketListerners(): void
+    {
+      this.socket.on("messageReceived", (messageWrapper) => {
+        console.log('message received');
+
+        // Handle the received message to ng-chat
+        this.onMessageReceived(messageWrapper.user, messageWrapper.message)
+      });
     }
 }
