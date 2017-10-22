@@ -1,0 +1,30 @@
+{
+  "name": "ng-chat-nodejs",
+  "version": "1.0.0",
+  "description": "A simple Node.js application that uses ng-chat",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rpaschoal/ng-chat-nodejs.git"
+  },
+  "keywords": [
+    "ng-chat",
+    "chat",
+    "nodejs",
+    "angular"
+  ],
+  "author": "Rafael Carvalho",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rpaschoal/ng-chat-nodejs/issues"
+  },
+  "homepage": "https://github.com/rpaschoal/ng-chat-nodejs#readme",
+  "dependencies": {
+    "express": "^4.16.2",
+    "vash": "^0.12.3"
+  }
+}
