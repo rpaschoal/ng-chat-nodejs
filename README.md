@@ -11,6 +11,15 @@ A simple Node.js application that uses [ng-chat](https://github.com/rpaschoal/ng
 * Run "ng serve --open"
 * Test joining a room with different browsers (or a incognito window) and exchange messages.
 
+### Understanding the setup
+
+Check the following files in this project:
+
+* /server.js
+* /angular-cli/src/app/app.module.ts
+* /angular-cli/src/app/app.component.ts
+* /angular-cli/src/app/socketio-adapter.ts
+
 ### Considerations
 
 This project is just a socket.io + [ng-chat](https://github.com/rpaschoal/ng-chat) sample. This code is not production ready.
