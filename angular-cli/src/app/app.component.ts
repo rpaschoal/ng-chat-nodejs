@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ChatAdapter } from 'ng-chat';
-import { DemoAdapter } from './demo-adapter'
+import { SocketIOAdapter } from './socketio-adapter'
 import { Socket } from 'ng-socket-io';
 import { Http } from '@angular/http';
 
@@ -32,7 +32,7 @@ export class AppComponent {
   {
     this.socket.on("generatedUserId", (userId) => {
       // Initializing the chat with the userId and the adapter with the socket instance
-      this.adapter = new DemoAdapter(userId, this.socket, this.http);
+      this.adapter = new SocketIOAdapter(userId, this.socket, this.http);
       this.userId = userId;
     });
   }

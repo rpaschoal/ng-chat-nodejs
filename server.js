@@ -40,14 +40,11 @@ var usersCollection = [];
 // Express routes
 app.set("view engine", "vash");
 
-app.get("/",function(req, res){
+app.get("*",function(req, res){
   res.render("index");
 });
 
-
 app.post("/listFriends",function(req, res){
-  console.log(req.body);
-
   var clonedArray = usersCollection.slice();
 
   // Getting the userId from the request body as this is just a demo 
@@ -60,7 +57,6 @@ app.post("/listFriends",function(req, res){
 });
 
 // Socket.io operations
-
 io.on('connection', function(socket){
   console.log('A user has connected to the server.');
 
@@ -73,6 +69,8 @@ io.on('connection', function(socket){
       avatar: null
     });
 
+    socket.broadcast.emit("friendsListChanged", usersCollection);
+
     console.log(username + " has joined the chat room.");
 
     // This is the user's unique ID to be used on ng-chat as the connected user.
@@ -84,6 +82,8 @@ io.on('connection', function(socket){
 
       var i = usersCollection.findIndex(x => x.id == socket.id);
       usersCollection.splice(i, 1);
+
+      socket.broadcast.emit("friendsListChanged", usersCollection);
    });
   });
 
