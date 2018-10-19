@@ -2,6 +2,9 @@ var http = require("http");
 var express = require("express");
 var bodyParser = require('body-parser');
 var formidable = require('formidable');
+var fs = require('fs');
+
+const uploadsDirectory = '/Uploads';
 
 var app = express();
 
@@ -62,8 +65,12 @@ app.post('/uploadFile', function (req, res){
 
   form.parse(req);
 
+  if (!fs.existsSync(uploadsDirectory)){
+    fs.mkdirSync(uploadsDirectory);
+  }
+
   form.on('fileBegin', function (name, file){
-      file.path = __dirname + '/uploads/' + file.name;
+      file.path = `${__dirname}${uploadsDirectory}/${file.name}`;
   });
 
   form.on('file', function (name, file){
