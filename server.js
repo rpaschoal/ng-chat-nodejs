@@ -1,6 +1,7 @@
 var http = require("http");
 var express = require("express");
 var bodyParser = require('body-parser');
+var formidable = require('formidable');
 
 var app = express();
 
@@ -54,6 +55,22 @@ app.post("/listFriends",function(req, res){
   clonedArray.splice(i,1);
 
   res.json(clonedArray);
+});
+
+app.post('/uploadFile', function (req, res){
+  var form = new formidable.IncomingForm();
+
+  form.parse(req);
+
+  form.on('fileBegin', function (name, file){
+      file.path = __dirname + '/uploads/' + file.name;
+  });
+
+  form.on('file', function (name, file){
+      console.log('Uploaded ' + file.name);
+  });
+
+  res.status(200);
 });
 
 // Socket.io operations

@@ -27,6 +27,7 @@
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
     "socket.io": "^2.0.3",
-    "vash": "^0.12.3"
+    "vash": "^0.12.3",
+    "formidable": "^1.2.1"
   }
 }
