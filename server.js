@@ -41,6 +41,8 @@ var path = __dirname + '/views/';
 
 var usersCollection = [];
 
+var socketInstance;
+
 // Express routes
 app.set("view engine", "vash");
 
@@ -62,19 +64,35 @@ app.post("/listFriends",function(req, res){
 
 app.post('/uploadFile', function (req, res){
   var form = new formidable.IncomingForm();
-
-  form.parse(req);
-
+  var ngChatUserId;
+  
   if (!fs.existsSync(uploadsDirectory)){
     fs.mkdirSync(uploadsDirectory);
   }
-
-  form.on('fileBegin', function (name, file){
+  
+  form.parse(req)
+  .on('field', function (name, field) {
+    if (name === 'ng-chat-userid')
+      ngChatUserId = field;
+  })
+  .on('fileBegin', function (name, file){
       file.path = `${__dirname}${uploadsDirectory}/${file.name}`;
-  });
-
-  form.on('file', function (name, file){
+  })
+  .on('file', function (name, file){
       console.log('Uploaded ' + file.name);
+
+    // Push socket IO status
+    let message = {
+      fromId: socketInstance.id,
+      toId: ngChatUserId,
+      message: file.name,
+      mimeType: file.type
+    };
+
+    io.to(ngChatUserId).emit("messageReceived", {
+      user: usersCollection.find(x => x.id == message.fromId),
+      message: message
+    });
   });
 
   res.status(200);
@@ -83,6 +101,9 @@ app.post('/uploadFile', function (req, res){
 // Socket.io operations
 io.on('connection', function(socket){
   console.log('A user has connected to the server.');
+
+  // Testing purposes only for upload of files
+  socketInstance = socket;
 
   socket.on('join', function(username) {
     // Same contract as ng-chat.User
