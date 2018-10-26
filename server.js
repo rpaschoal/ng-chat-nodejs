@@ -63,7 +63,6 @@ app.post("/listFriends",function(req, res){
 
 app.post('/uploadFile', function (req, res){
   let form = new formidable.IncomingForm();
-  let ngChatSenderUserId;
   let ngChatDestinataryUserId;
 
   if (!fs.existsSync("/Uploads")){
@@ -72,10 +71,8 @@ app.post('/uploadFile', function (req, res){
   
   form.parse(req)
   .on('field', function (name, field) {
-    // You must always validate these fields with your backend logic
-    if (name === 'ng-chat-sender-userid')
-      ngChatSenderUserId = field;
-    else if (name === 'ng-chat-destinatary-userid')
+    // You must always validate this with your backend logic
+    if (name === 'ng-chat-destinatary-userid')
       ngChatDestinataryUserId = field;
   })
   .on('fileBegin', function (name, file){
@@ -87,7 +84,7 @@ app.post('/uploadFile', function (req, res){
     // Push socket IO status
     let message = {
       type: 2, // MessageType.File = 2
-      fromId: ngChatSenderUserId,
+      //fromId: ngChatSenderUserId, fromId will be set by the angular component after receiving the http response
       toId: ngChatDestinataryUserId,
       message: file.name,
       mimeType: file.type,
