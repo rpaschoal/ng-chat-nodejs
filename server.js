@@ -1,10 +1,9 @@
 var http = require("http");
+var path = require("path");
 var express = require("express");
 var bodyParser = require('body-parser');
 var formidable = require('formidable');
 var fs = require('fs');
-
-const uploadsDirectory = '/Uploads';
 
 var app = express();
 
@@ -37,14 +36,14 @@ var server = app.listen(3000);
 
 var io = require('socket.io').listen(server);
 
-var path = __dirname + '/views/';
+//var path = __dirname + '/views/';
 
 var usersCollection = [];
 
-var socketInstance;
-
 // Express routes
 app.set("view engine", "vash");
+
+app.use("/Uploads", express.static(path.join(__dirname, 'Uploads')));
 
 app.get("*",function(req, res){
   res.render("index");
@@ -63,47 +62,50 @@ app.post("/listFriends",function(req, res){
 });
 
 app.post('/uploadFile', function (req, res){
-  var form = new formidable.IncomingForm();
-  var ngChatUserId;
-  
-  if (!fs.existsSync(uploadsDirectory)){
-    fs.mkdirSync(uploadsDirectory);
+  let form = new formidable.IncomingForm();
+  let ngChatSenderUserId;
+  let ngChatDestinataryUserId;
+
+  if (!fs.existsSync("/Uploads")){
+    fs.mkdirSync("/Uploads");
   }
   
   form.parse(req)
   .on('field', function (name, field) {
-    if (name === 'ng-chat-userid')
-      ngChatUserId = field;
+    // You must always validate these fields with your backend logic
+    if (name === 'ng-chat-sender-userid')
+      ngChatSenderUserId = field;
+    else if (name === 'ng-chat-destinatary-userid')
+      ngChatDestinataryUserId = field;
   })
   .on('fileBegin', function (name, file){
-      file.path = `${__dirname}${uploadsDirectory}/${file.name}`;
+      file.path = `${__dirname}/Uploads/${file.name}`;
   })
   .on('file', function (name, file){
-      console.log('Uploaded ' + file.name);
+    console.log('Uploaded ' + file.name);
 
     // Push socket IO status
     let message = {
-      fromId: socketInstance.id,
-      toId: ngChatUserId,
+      type: 2, // MessageType.File = 2
+      fromId: ngChatSenderUserId,
+      toId: ngChatDestinataryUserId,
       message: file.name,
-      mimeType: file.type
+      mimeType: file.type,
+      fileSizeInBytes: file.size,
+      downloadUrl:  `http://localhost:3000/Uploads/${file.name}`
     };
 
-    io.to(ngChatUserId).emit("messageReceived", {
-      user: usersCollection.find(x => x.id == message.fromId),
-      message: message
-    });
-  });
+    console.log("Returning file message:");
+    console.log(message);
 
-  res.status(200);
+    res.status(200);
+    res.json(message);
+  });
 });
 
 // Socket.io operations
 io.on('connection', function(socket){
   console.log('A user has connected to the server.');
-
-  // Testing purposes only for upload of files
-  socketInstance = socket;
 
   socket.on('join', function(username) {
     // Same contract as ng-chat.User
