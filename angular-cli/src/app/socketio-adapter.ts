@@ -1,4 +1,4 @@
-import { ChatAdapter, User, Message, UserStatus } from 'ng-chat';
+import { ChatAdapter, User, Message, ParticipantResponse } from 'ng-chat';
 import { Observable, of } from "rxjs";
 import { map, catchError } from 'rxjs/operators';
 import { Socket } from 'ng-socket-io';
@@ -19,7 +19,7 @@ export class SocketIOAdapter extends ChatAdapter
         this.InitializeSocketListerners();  
     }
 
-    listFriends(): Observable<User[]> {
+    listFriends(): Observable<ParticipantResponse[]> {
         // List connected users to show in the friends list
         // Sending the userId from the request body as this is just a demo 
         return this.http
@@ -44,12 +44,13 @@ export class SocketIOAdapter extends ChatAdapter
     {
       this.socket.on("messageReceived", (messageWrapper) => {
         // Handle the received message to ng-chat
+
         this.onMessageReceived(messageWrapper.user, messageWrapper.message);
       });
 
-      this.socket.on("friendsListChanged", (usersCollection: Array<User>) => {
+      this.socket.on("friendsListChanged", (usersCollection: Array<ParticipantResponse>) => {
         // Handle the received message to ng-chat
-        this.onFriendsListChanged(usersCollection.filter(x => x.id != this.userId));
+        this.onFriendsListChanged(usersCollection.filter(x => x.participant.id != this.userId));
       });
     }
 }

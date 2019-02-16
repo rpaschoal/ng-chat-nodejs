@@ -54,7 +54,7 @@ app.post("/listFriends",function(req, res){
 
   // Getting the userId from the request body as this is just a demo 
   // Ideally in a production application you would change this to a session value or something else
-  var i = usersCollection.findIndex(x => x.id == req.body.userId);
+  var i = usersCollection.findIndex(x => x.participant.id == req.body.userId);
 
   clonedArray.splice(i,1);
 
@@ -72,7 +72,7 @@ app.post('/uploadFile', function (req, res){
   form.parse(req)
   .on('field', function (name, field) {
     // You must always validate this with your backend logic
-    if (name === 'ng-chat-destinatary-userid')
+    if (name === 'ng-chat-participant-id')
       ngChatDestinataryUserId = field;
   })
   .on('fileBegin', function (name, file){
@@ -106,11 +106,13 @@ io.on('connection', function(socket){
 
   socket.on('join', function(username) {
     // Same contract as ng-chat.User
-    usersCollection.push({  
-      id: socket.id, // Assigning the socket ID as the user ID in this example
-      displayName: username,
-      status: 0, // ng-chat UserStatus.Online,
-      avatar: null
+    usersCollection.push({
+        participant: {
+            id: socket.id, // Assigning the socket ID as the user ID in this example
+            displayName: username,
+            status: 0, // ng-chat UserStatus.Online,
+            avatar: null
+        }
     });
 
     socket.broadcast.emit("friendsListChanged", usersCollection);
@@ -124,7 +126,7 @@ io.on('connection', function(socket){
     socket.on('disconnect', function() {
       console.log('User disconnected!');
 
-      var i = usersCollection.findIndex(x => x.id == socket.id);
+      var i = usersCollection.findIndex(x => x.participant.id == socket.id);
       usersCollection.splice(i, 1);
 
       socket.broadcast.emit("friendsListChanged", usersCollection);
@@ -135,8 +137,10 @@ io.on('connection', function(socket){
     console.log("Message received:");
     console.log(message);
 
+    console.log(usersCollection.find(x => x.participant.id == message.fromId));
+
     io.to(message.toId).emit("messageReceived", {
-      user: usersCollection.find(x => x.id == message.fromId),
+      user: usersCollection.find(x => x.participant.id == message.fromId).participant,
       message: message
     });
 
