@@ -1,3 +1,5 @@
+# ⚠️ This project has been archived and is no longer maintained
+
 # ng-chat-nodejs
 A simple Node.js application that uses [ng-chat](https://github.com/rpaschoal/ng-chat).
 
